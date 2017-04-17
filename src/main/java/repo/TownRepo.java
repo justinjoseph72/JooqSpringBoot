@@ -1,6 +1,7 @@
 package repo;
 
 import helpers.JooqDsl;
+import helpers.LogHelper;
 import model.TownModel;
 import org.jooq.DSLContext;
 import org.jooq.SelectQuery;
@@ -27,6 +28,7 @@ public class TownRepo {
 
 
     public List<TownModel> getAllTowns(){
+        LogHelper.writeLog(this,"start all town","getAllTowns");
         List<TownModel> towns = null;
         towns = dsl.selectFrom(Town.TOWN).fetchInto(TownModel.class);
         System.out.println("the towns are ");
@@ -34,6 +36,7 @@ public class TownRepo {
     }
 
     public  List<TownModel> getTown(String name){
+        LogHelper.writeLog(this,"start get town","getgetTown");
         List<TownModel> towns = null;
         towns =dsl.selectFrom(Town.TOWN).where(Town.TOWN.NAME.trim().equal(name)).fetchInto(TownModel.class);
         return towns;
