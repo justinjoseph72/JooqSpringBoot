@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5caeb44f-4338-4db0-87ba-13c3bb7441b9" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/repo/TownRepo.java" afterPath="$PROJECT_DIR$/src/main/java/repo/TownRepo.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -116,6 +115,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Justin Joseph &lt;justinjoseph72@users.noreply.github.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GradleLocalSettings">
@@ -798,6 +802,14 @@
       <option name="presentableId" value="Default" />
       <updated>1492325221231</updated>
     </task>
+    <task id="LOCAL-00001" summary="adding logging using log4j">
+      <created>1492463959113</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1492463959113</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -836,6 +848,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="adding logging using log4j" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding logging using log4j" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
