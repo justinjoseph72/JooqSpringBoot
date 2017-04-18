@@ -28,34 +28,31 @@ public class TownRepo {
 
     public List<TownModel> getAllTowns(){
         LogHelper.writeLog(this,"start all town","getAllTowns");
-        List<TownModel> towns = null;
-        towns = dsl.selectFrom(Town.TOWN).fetchInto(TownModel.class);
+        List<TownModel> towns = dsl.selectFrom(Town.TOWN).fetchInto(TownModel.class);
         System.out.println("the towns are ");
         return towns;
     }
 
     public  List<TownModel> getTown(String name){
         LogHelper.writeLog(this,"start get town","getgetTown");
-        List<TownModel> towns = null;
-        towns =dsl.selectFrom(Town.TOWN).where(Town.TOWN.NAME.trim().equal(name)).fetchInto(TownModel.class);
+        List<TownModel> towns = dsl.selectFrom(Town.TOWN).where(Town.TOWN.NAME.trim().equal(name)).fetchInto(TownModel.class);
         return towns;
     }
 
-    public boolean insertTown(TownModel model){
+    public boolean insertTown(List<TownModel> models){
         LogHelper.writeLog(this,"write start","insertTown");
-        boolean myReturn = false;
+        boolean myReturn = true;
         try {
-            TownRecord newRec = dsl.newRecord(Town.TOWN);
-            newRec.setName("Dilshad Garden");
-            newRec.setDistrict("New Delhi");
-            if(newRec.insert()==0){
-                newRec.update();
-            }
-            if(newRec.getId()!=null){
-                myReturn = true;
-            }
-            LogHelper.writeLog(this,"the id is " + newRec.getId(),"insertTown");
+            models.forEach(model ->{
+                TownRecord newRec = dsl.newRecord(Town.TOWN);
+                newRec.setName(model.getName());
+                newRec.setDistrict(model.getDistrict());
+                dsl.insertInto(Town.TOWN).set(newRec).execute();
+                LogHelper.writeLog(this,"the id is " + newRec.getId(),"insertTown");
+            });
+
         } catch (Exception e) {
+            myReturn = false;
             e.printStackTrace();
         }
         return myReturn;

@@ -2,10 +2,7 @@ package app.controller;
 
 import app.helpers.ConnectionHelper;
 import app.model.TownModel;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import app.repo.TownRepo;
 
 import java.sql.Connection;
@@ -18,6 +15,7 @@ import java.util.List;
 public class TownController {
 
     @RequestMapping(value="/towns",method = RequestMethod.GET)
+    @ResponseBody
     public List<TownModel> getAllTowns(){
         List<TownModel> townList = null;
         try(Connection conn = ConnectionHelper.getConnectionFromDataSource()){
@@ -35,6 +33,7 @@ public class TownController {
     }
 
     @RequestMapping(value = "/towns/{town}", method = RequestMethod.GET)
+    @ResponseBody
     public List<TownModel> getTown(@PathVariable String town){
         List<TownModel> towns = null;
         try(Connection conn = ConnectionHelper.getConnectionFromDataSource()){
@@ -45,11 +44,12 @@ public class TownController {
         }
         return towns;
     }
-    @RequestMapping(value ="/towns/new", method = RequestMethod.GET)
-    public String newTown(TownModel town){
+    @RequestMapping(value ="/towns/new", method = RequestMethod.POST)
+    @ResponseBody
+    public String newTown(@RequestBody List<TownModel> towns){
         String myReturn ="Error";
         try(Connection conn = ConnectionHelper.getConnectionFromDataSource()){
-            if(new TownRepo(conn).insertTown(town)){
+            if(new TownRepo(conn).insertTown(towns)){
                 myReturn = "Success";
             }
         }

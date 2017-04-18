@@ -4,9 +4,9 @@ package app.model;
  * Created by Justin on 17/04/2017.
  */
 public class TownModel {
-    public Integer id;
-    public String name;
-    public String district;
+    private Integer id;
+    private String name;
+    private String district;
 
     public Integer getId() {
         return id;
