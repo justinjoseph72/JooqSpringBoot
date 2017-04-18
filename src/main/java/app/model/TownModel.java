@@ -1,4 +1,4 @@
-package model;
+package app.model;
 
 /**
  * Created by Justin on 17/04/2017.

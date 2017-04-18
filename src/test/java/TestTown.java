@@ -1,5 +1,4 @@
 import org.junit.Test;
-import repo.TownRepo;
 
 import static org.junit.Assert.assertEquals;
 

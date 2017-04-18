@@ -1,4 +1,4 @@
-package helpers;
+package app.helpers;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;

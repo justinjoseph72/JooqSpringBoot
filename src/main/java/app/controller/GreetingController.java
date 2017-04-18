@@ -1,6 +1,6 @@
-package controller;
+package app.controller;
 
-import model.Greeting;
+import app.model.Greeting;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

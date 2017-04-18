@@ -1,10 +1,9 @@
-package repo;
+package app.repo;
 
-import helpers.JooqDsl;
-import helpers.LogHelper;
-import model.TownModel;
+import app.helpers.JooqDsl;
+import app.helpers.LogHelper;
+import app.model.TownModel;
 import org.jooq.DSLContext;
-import org.jooq.SelectQuery;
 import org.jooq.util.maven.example.tables.Town;
 import org.jooq.util.maven.example.tables.records.TownRecord;
 
@@ -40,5 +39,25 @@ public class TownRepo {
         List<TownModel> towns = null;
         towns =dsl.selectFrom(Town.TOWN).where(Town.TOWN.NAME.trim().equal(name)).fetchInto(TownModel.class);
         return towns;
+    }
+
+    public boolean insertTown(TownModel model){
+        LogHelper.writeLog(this,"write start","insertTown");
+        boolean myReturn = false;
+        try {
+            TownRecord newRec = dsl.newRecord(Town.TOWN);
+            newRec.setName("Dilshad Garden");
+            newRec.setDistrict("New Delhi");
+            if(newRec.insert()==0){
+                newRec.update();
+            }
+            if(newRec.getId()!=null){
+                myReturn = true;
+            }
+            LogHelper.writeLog(this,"the id is " + newRec.getId(),"insertTown");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return myReturn;
     }
 }
