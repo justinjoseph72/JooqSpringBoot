@@ -12,6 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.0" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-jdbc:1.5.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.5.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:1.5.2.RELEASE" level="project" />
@@ -80,5 +81,7 @@
     <orderEntry type="library" name="Maven: org.jooq:jooq-meta:3.7.4" level="project" />
     <orderEntry type="library" name="Maven: org.jooq:jooq-codegen:3.7.4" level="project" />
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.4-1206-jdbc42" level="project" />
+    <orderEntry type="library" name="Maven: org.modelmapper:modelmapper:0.7.6" level="project" />
+    <orderEntry type="library" name="Maven: org.modelmapper.extensions:modelmapper-jooq:0.7.6" level="project" />
   </component>
 </module>

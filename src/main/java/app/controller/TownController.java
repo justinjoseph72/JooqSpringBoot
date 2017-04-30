@@ -2,6 +2,8 @@ package app.controller;
 
 import app.helpers.ConnectionHelper;
 import app.model.TownModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import app.repo.TownRepo;
 
@@ -46,17 +48,16 @@ public class TownController {
     }
     @RequestMapping(value ="/towns/new", method = RequestMethod.POST)
     @ResponseBody
-    public String newTown(@RequestBody List<TownModel> towns){
-        String myReturn ="Error";
+    public ResponseEntity<Void> newTown(@RequestBody List<TownModel> towns){
         try(Connection conn = ConnectionHelper.getConnectionFromDataSource()){
             if(new TownRepo(conn).insertTown(towns)){
-                myReturn = "Success";
+                return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
             }
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
-        return myReturn;
+        return new ResponseEntity<Void>(HttpStatus.I_AM_A_TEAPOT);
     }
 
 }

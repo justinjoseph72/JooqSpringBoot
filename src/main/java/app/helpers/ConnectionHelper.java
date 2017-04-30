@@ -29,9 +29,12 @@ public class ConnectionHelper {
         Connection conn = null;
 
         PGPoolingDataSource source = new PGPoolingDataSource();
+        //commented out this line because this will cause error when
+        //creating multiple datasource
 //        source.setDataSourceName("PostGress datasource");
         source.setServerName("localhost");
         source.setDatabaseName("postgres");
+        //source.setCurrentSchema("testSchema");
         source.setUser("postgres");
         source.setPassword("justin");
         source.setMaxConnections(10);
