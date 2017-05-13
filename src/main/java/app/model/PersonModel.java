@@ -6,7 +6,7 @@ package app.model;
 public class PersonModel {
     private Integer id;
     private String firstName;
-    private String secondName;
+    private String lastName;
     private TownModel town;
 
     public Integer getId() {
@@ -25,12 +25,12 @@ public class PersonModel {
         this.firstName = firstName;
     }
 
-    public String getSecondName() {
-        return secondName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public TownModel getTown() {

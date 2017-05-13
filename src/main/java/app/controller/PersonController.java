@@ -1,0 +1,99 @@
+package app.controller;
+
+import app.helpers.ConnectionHelper;
+import app.model.PersonModel;
+import app.model.TownModel;
+import app.repo.PersonRepo;
+import constants.CommonConstants;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import sun.awt.SunHints;
+
+import java.sql.Connection;
+import java.util.List;
+
+/**
+ * Created by Justin on 13/05/2017.
+ */
+@RestController
+public class PersonController {
+
+    public PersonController(){
+
+    }
+
+    @ApiOperation(value = "Get all the people for a town")
+    @RequestMapping(value = "/people/{town}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<List<PersonModel>> getPeopleOfTown(@ApiParam(value = "town name") @PathVariable String town){
+        List<PersonModel> people = null;
+        try(Connection conn = ConnectionHelper.getConnectionFromDataSource()){
+            PersonRepo myRepo = new PersonRepo(conn);
+            people = myRepo.getPeopleInTown(town);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            return new ResponseEntity<List<PersonModel>>(people,HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+        if(people!=null){
+            return new ResponseEntity<List<PersonModel>>(people, HttpStatus.OK);
+        }
+        return new ResponseEntity<List<PersonModel>>(people,HttpStatus.NOT_FOUND);
+    }
+
+    @ApiOperation(value="Add a new person to a town")
+    @RequestMapping(value = "/addPerson",method = RequestMethod.POST)
+    public ResponseEntity<Void> addNewPerson(@ApiParam(value = "fist name of person") @RequestParam("fist_name") String firstName,
+                                               @ApiParam(value = "last name of person") @RequestParam(value="last_name", required = true) String lastName,
+                                               @ApiParam(value = "town") @RequestParam(value = "town", required = true) String town,
+                                               @ApiParam(value = "district") @RequestParam(value = "district", required = true) String district){
+        String response = null;
+        try(Connection conn = ConnectionHelper.getConnectionFromDataSource()) {
+            if(StringUtils.isNotEmpty(town) && StringUtils.isNotEmpty(lastName)){
+                TownModel townModel = new TownModel();
+                townModel.setName(town);
+                townModel.setDistrict(district);
+                PersonModel personModel = new PersonModel();
+                personModel.setFirstName(firstName);
+                personModel.setLastName(lastName);
+                personModel.setTown(townModel);
+                response = new PersonRepo(conn).addPerson(personModel);
+                if(CommonConstants.SUCCESS.equals(response)){
+                    return  new ResponseEntity<Void>(HttpStatus.CREATED);
+                }
+                if(CommonConstants.ERROR.equals(response)){
+                    return  new ResponseEntity<Void>(HttpStatus.EXPECTATION_FAILED);
+                }
+                if(CommonConstants.INVALID_TOWN.equals(response)){
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("error", response);
+                    return  new ResponseEntity<Void>(headers,HttpStatus.EXPECTATION_FAILED);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @ApiOperation(value = "Get list of matching persons")
+    @RequestMapping(value = "/person/lookUp", method = RequestMethod.GET)
+    public ResponseEntity<List<PersonModel>> getPerson(@ApiParam(value = "person search text") @RequestParam(value = "searchText", required = true) String searchText){
+        List<PersonModel> peopleList = null;
+        try(Connection conn = ConnectionHelper.getConnectionFromDataSource()){
+                peopleList = new PersonRepo(conn).getPersons(searchText);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            new ResponseEntity<List<PersonModel>>(peopleList, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<List<PersonModel>>(peopleList, HttpStatus.NOT_FOUND);
+    }
+}
