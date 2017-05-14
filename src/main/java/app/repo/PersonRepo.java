@@ -10,6 +10,7 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.util.maven.example.tables.Person;
 import org.jooq.util.maven.example.tables.Town;
 import org.jooq.util.maven.example.tables.records.PersonRecord;
+import org.jooq.util.maven.example.tables.records.TownRecord;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NameTokenizers;
 import org.modelmapper.jooq.RecordValueReader;
@@ -33,7 +34,7 @@ public class PersonRepo {
     {
         this.conn = conn;
         dsl = JooqDsl.getDSL(conn);
-         mapper = new ModelMapper();
+        mapper = new ModelMapper();
         mapper.getConfiguration().addValueReader(new RecordValueReader());
         mapper.getConfiguration().setSourceNameTokenizer(NameTokenizers.UNDERSCORE);
 
@@ -58,8 +59,9 @@ public class PersonRepo {
                     personRec.setFirstName(person.getFirstName());
                     personRec.setLastName(person.getLastName());
                     personRec.setTownId(person.getTown().getId());
-                    dsl.insertInto(PERSON).set(personRec).execute();
-                    myReturn =  CommonConstants.SUCCESS;
+                    personRec.setDateOfBirth(person.getDateOfBirth());
+                    personRec.store();
+                    myReturn =  personRec.getId().toString();
                 }
                 if(townModel == null){
                     myReturn= CommonConstants.INVALID_TOWN;
@@ -117,5 +119,37 @@ public class PersonRepo {
         }
 
         return people;
+    }
+
+    public String updatePerson(Integer id,PersonModel person){
+        String response = CommonConstants.ERROR;
+        try {
+            if(person!= null){
+                PersonRecord personRecord = dsl.selectFrom(Person.PERSON).where(Person.PERSON.ID.eq(id)).forUpdate().fetchOne();
+                if(personRecord!=null){
+                    Condition townCondition = Town.TOWN.NAME.trim().eq(person.getTown().getName()).and(
+                            Town.TOWN.DISTRICT.trim().eq(person.getTown().getDistrict()));
+                    TownRecord townRecord = dsl.selectFrom(Town.TOWN).where(townCondition).fetchOne();
+                    if(townRecord!=null){
+                        personRecord.setTownId(townRecord.getId());
+                        personRecord.setFirstName(person.getFirstName());
+                        personRecord.setLastName(person.getLastName());
+                        personRecord.setDateOfBirth(person.getDateOfBirth());
+                        if(personRecord.store()>0){
+                            response = CommonConstants.SUCCESS;
+                        }
+                    }
+                    else{
+                        return CommonConstants.INVALID_TOWN;
+                    }
+                }
+                else{
+                    return CommonConstants.INVALID_PERSON;
+                }
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 }

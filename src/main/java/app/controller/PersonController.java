@@ -50,23 +50,15 @@ public class PersonController {
 
     @ApiOperation(value="Add a new person to a town")
     @RequestMapping(value = "/addPerson",method = RequestMethod.POST)
-    public ResponseEntity<Void> addNewPerson(@ApiParam(value = "fist name of person") @RequestParam("fist_name") String firstName,
-                                               @ApiParam(value = "last name of person") @RequestParam(value="last_name", required = true) String lastName,
-                                               @ApiParam(value = "town") @RequestParam(value = "town", required = true) String town,
-                                               @ApiParam(value = "district") @RequestParam(value = "district", required = true) String district){
+    public ResponseEntity<Void> addNewPerson(@ApiParam(value = "person details") @RequestBody PersonModel person){
         String response = null;
         try(Connection conn = ConnectionHelper.getConnectionFromDataSource()) {
-            if(StringUtils.isNotEmpty(town) && StringUtils.isNotEmpty(lastName)){
-                TownModel townModel = new TownModel();
-                townModel.setName(town);
-                townModel.setDistrict(district);
-                PersonModel personModel = new PersonModel();
-                personModel.setFirstName(firstName);
-                personModel.setLastName(lastName);
-                personModel.setTown(townModel);
-                response = new PersonRepo(conn).addPerson(personModel);
-                if(CommonConstants.SUCCESS.equals(response)){
-                    return  new ResponseEntity<Void>(HttpStatus.CREATED);
+            if(StringUtils.isNotEmpty(person.getTown().getName()) && StringUtils.isNotEmpty(person.getLastName())){
+               response = new PersonRepo(conn).addPerson(person);
+                if( StringUtils.isNumeric(response) && Integer.parseInt(response)>0){
+                    HttpHeaders header = new HttpHeaders();
+                    header.set("personId",response);
+                    return  new ResponseEntity<Void>(header,HttpStatus.CREATED);
                 }
                 if(CommonConstants.ERROR.equals(response)){
                     return  new ResponseEntity<Void>(HttpStatus.EXPECTATION_FAILED);
@@ -96,4 +88,21 @@ public class PersonController {
         }
         return new ResponseEntity<List<PersonModel>>(peopleList, HttpStatus.NOT_FOUND);
     }
+
+    @ApiOperation(value ="updating a person's info")
+    @RequestMapping(value = "/person/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> updatePerson(@PathVariable Integer id,@RequestBody PersonModel person){
+        if(person== null || id ==null || id<1 ){
+            return new ResponseEntity<String>(CommonConstants.INVALID_PERSON,HttpStatus.BAD_REQUEST);
+        }
+        try(Connection conn = ConnectionHelper.getConnectionFromDataSource()){
+            String response = new PersonRepo(conn).updatePerson(id,person);
+            return new ResponseEntity<String>(response,HttpStatus.OK);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            return  new ResponseEntity<String>(CommonConstants.ERROR,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
